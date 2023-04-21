@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Contact;
 use App\Models\Department;
+use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
@@ -14,7 +16,8 @@ class ContactController extends Controller
      */
     public function index()
     {
-        return view( 'contacts.index' );
+        $contacts = Contact::all();
+        return view( 'contacts.index', compact('contacts') );
     }
 
     /**
@@ -37,34 +40,38 @@ class ContactController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            'text' => 'required|max:100',
-            'start_date' =>  'required|date|after:yesterday', //start_dateが今日以降の日付かどうかチェック
-            'finish_date' => 'required|date|after:yesterday',
+            'department_id' => 'required',
+            'name' => 'required|max:255',
+            'email' =>  'required|max:255|email',
+            'content' => 'required|max:1000',
+            'age' => 'required|integer|between:0,100',
+            'gender' => 'required|integer|between:1,3',
         ];
     
         $messages = [
-            'required' => '必須項目です', 'max' => '100文字以下にしてください。',
-            'start_date.after' => '開始日には今日以降の日付を入力してください。',
-            'finish_date.after' => '終了日には開始日以降の日付を入力してください。',
+            'required' => '必須項目です。',
+            'max' => '255文字以内で入力してください。',
+            'email' => '入力した値が不正です。',
+            'content.max' => '1000文字以内で入力してください。',
+            'integer' => '整数で入力してください。',
+            'age.between' => '1~100の数字を入力してください。',
+            'gender.between' => '1~3の数字を入力してください。',
         ];
 
         Validator::make($request->all(), $rules, $messages)->validate();
 
-        //モデルをインスタンス化
-        $task = new Task;
+        $contact = new Contact;
         
-        $task->text = $request->input('text');
-        $task->user_id = Auth::id();
-        $task->start_date = $request->input('start_date');
-        $task->finish_date = $request->input('finish_date');
+        $contact->department_id = $request->input("department_id");
+        $contact->name = $request->input('name');
+        $contact->email = $request->input('email');
+        $contact->content = $request->input('content');
+        $contact->age = $request->input('age');
+        $contact->gender = $request->input('gender');
         
+        $contact->save();
         
-        //データベースに保存
-        $task->save();
-        
-        //リダイレクト
-        session()->flash('flash_message', 'タスクを追加しました');
-        return redirect('/tasks');
+        return redirect()->route('contacts.show', ['contact' => $contact->id])->with('success', 'お問い合わせを送信しました。');
     }
 
     /**
@@ -75,7 +82,8 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-        //
+        $contact = Contact::find($id);
+        return view('contacts.show', compact('contact'));
     }
 
     /**
