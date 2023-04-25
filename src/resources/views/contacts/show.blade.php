@@ -21,7 +21,13 @@
     </div>
     <div>
         <h4>性別</h4>
-        <p>{{ $contact->gender }}</p>
+        @if ( $contact->gender === 1)
+            <p>男性</p>
+        @elseif ( $contact->gender === 2)
+            <p>女性</p>
+        @else
+            <p>その他</p>
+        @endif
     </div>
     <div>
         <h4>お問い合わせ内容</h4>

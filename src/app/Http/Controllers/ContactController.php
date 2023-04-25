@@ -5,10 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Contact;
 use App\Models\Department;
+use App\Repositories\ContactRepository;
+use App\Repositories\DepartmentRepository;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends Controller
 {
+    protected $contactRepository;
+
+    public function __construct(ContactRepository $contactRepository, DepartmentRepository $departmentRepository)
+    {
+        $this->contactRepository = $contactRepository;
+        $this->departmentRepository = $departmentRepository;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -16,7 +25,7 @@ class ContactController extends Controller
      */
     public function index()
     {
-        $contacts = Contact::all();
+        $contacts = $this->contactRepository->getAllContacts();
         return view( 'contacts.index', compact('contacts') );
     }
 
@@ -27,7 +36,7 @@ class ContactController extends Controller
      */
     public function create()
     {
-        $departments = Department::pluck('name', 'id');
+        $departments = $this->departmentRepository->getAllDepartmentsId();
         return view('contacts.confirm', compact('departments'));
     }
 
@@ -60,16 +69,7 @@ class ContactController extends Controller
 
         Validator::make($request->all(), $rules, $messages)->validate();
 
-        $contact = new Contact;
-        
-        $contact->department_id = $request->input("department_id");
-        $contact->name = $request->input('name');
-        $contact->email = $request->input('email');
-        $contact->content = $request->input('content');
-        $contact->age = $request->input('age');
-        $contact->gender = $request->input('gender');
-        
-        $contact->save();
+        $contact = $this->contactRepository->store($request->all());
         
         return redirect()->route('contacts.show', ['contact' => $contact->id])->with('success', 'お問い合わせを送信しました。');
     }
@@ -82,7 +82,7 @@ class ContactController extends Controller
      */
     public function show($id)
     {
-        $contact = Contact::find($id);
+        $contact = $this->contactRepository->getContactById($id);
         return view('contacts.show', compact('contact'));
     }
 

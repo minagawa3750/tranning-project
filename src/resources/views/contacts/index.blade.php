@@ -23,7 +23,13 @@
                         <td>{{ $contact->name }}</td>
                         <td>{{ $contact->email }}</td>
                         <td>{{ $contact->age }}</td>
-                        <td>{{ $contact->gender }}</td>
+                        @if ( $contact->gender === 1)
+                            <td>男性</td>
+                        @elseif ( $contact->gender === 2)
+                            <td>女性</td>
+                        @else
+                            <td>その他</td>
+                        @endif
                         <td><a href="/contact/{{ $contact->id }}">詳細</a></td>
                     </tr>
                 @endforeach

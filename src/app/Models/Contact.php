@@ -12,4 +12,5 @@ class Contact extends Model
     public function department() {
         return $this->belongsTo('App\Models\Department');
     }
+
 }

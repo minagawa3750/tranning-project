@@ -9,7 +9,7 @@
     <div class="contact_form">
         <div>
             <label for="department">部署名</label>
-            <select name="department_id" id="department_id" value="{{ old('department_id') }}">
+            <select name="department_id" id="department_id">
                 <option value="">-- 選択してください --</option>
                 @foreach ($departments as $id => $name)
                     <option value="{{ $id }}" {{ old('department_id') ==  $id ? 'selected' : '' }}>{{ $name }}</option>
