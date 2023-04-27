@@ -19,13 +19,11 @@ class DepartmentFactory extends Factory
 
     public function definition()
     {
-        $now = Carbon::now();
         return [
             'name' => '部署'.self::$sequence++,
             'manager_name' => $this->faker->name(),
             'created_at' => $this->faker->dateTime(),
             'updated_at' => $this->faker->dateTime(), 
-            'deleted_at' => $this->faker->dateTime(),
         ];
     }
 }
