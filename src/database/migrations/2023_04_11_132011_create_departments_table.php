@@ -17,9 +17,8 @@ class CreateDepartmentsTable extends Migration
             $table->id();
             $table->string('name', 20);
             $table->string('manager_name', 20)->nullable();
-            $table->datetime('created_at')->nullable();
-            $table->datetime('updated_at')->nullable();
-            $table->datetime('deleted_at')->nullable();
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

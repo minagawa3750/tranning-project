@@ -5,22 +5,24 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Department extends Model
+class Contact extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'name',
-        'manager_name',
+        'email',
+        'content',
+        'age',
+        'gender',
     ];
 
     protected $guarded = [
         'created_at', 
-        'updated_at',
-        'deleted_at',
+        'updated_at'
     ];
 
-    public function contact() {
-        return $this->hasMany("App\Models\Contact");
+    public function department() {
+        return $this->belongsTo('App\Models\Department');
     }
 }
